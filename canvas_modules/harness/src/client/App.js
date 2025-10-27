@@ -97,9 +97,11 @@ import AppSettingsPanel from "./app-x-settings-panel.jsx";
 // import allTypesCanvas from "../../../harness/test_resources/diagrams/allTypesCanvas.json";
 // import modelerPalette from "../../../harness/test_resources/palettes/modelerPalette.json";
 
-import { Add, AddAlt, SubtractAlt, Api_1 as Api, Chat, ChatOff, ColorPalette, Download, Edit, FlowData, GuiManagement,
+import {
+	Add, AddAlt, SubtractAlt, Api_1 as Api, Chat, ChatOff, ColorPalette, Download, Edit, FlowData, GuiManagement,
 	Help, OpenPanelFilledBottom, Play, Scale, Settings, SelectWindow,
-	StopFilledAlt, Subtract, TextScale, TouchInteraction, Notification, Save, Launch, Restart } from "@carbon/react/icons";
+	StopFilledAlt, Subtract, TextScale, TouchInteraction, Notification, Save, Launch, Restart
+} from "@carbon/react/icons";
 
 import { InlineLoading, Checkbox, Button, OverflowMenu, OverflowMenuItem, Toggle } from "@carbon/react";
 
@@ -128,6 +130,7 @@ import {
 	EXAMPLE_APP_WYSIWYG,
 	EXAMPLE_APP_REACT_NODES_DRAGGABLE,
 	EXAMPLE_APP_REACT_NODES_CARBON,
+	EXAMPLE_APP_WORKFLOW,
 	EXAMPLE_APP_REACT_NODES_MAPPING,
 	CUSTOM,
 	PROPERTIES_FLYOUT,
@@ -172,6 +175,7 @@ import EXTERNAL_SUB_FLOW_CANVAS_2 from "../../test_resources/diagrams/externalSu
 import FormsService from "./services/FormsService";
 
 import ExpressionInfo from "./constants/json/functionlist.json";
+import WorkflowCanvas from "./components/custom-canvases/workflow/workflow-canvas.jsx";
 
 
 class App extends React.Component {
@@ -545,7 +549,7 @@ class App extends React.Component {
 		this.setBreadcrumbsDefinition();
 		const that = this;
 		FormsService.getFiles(PARAMETER_DEFS)
-			.then(function(res) {
+			.then(function (res) {
 				that.availableParamDefs = res;
 			});
 	}
@@ -568,10 +572,10 @@ class App extends React.Component {
 			this.setState({
 				selectedCanvasDropdownFile: selectedCanvasDropdownFile,
 				canvasFileChooserVisible: false
-			}, function() {
+			}, function () {
 				that.log("Submit canvas diagram", that.state.selectedCanvasDropdownFile);
 				FormsService.getFileContent("diagrams", that.state.selectedCanvasDropdownFile)
-					.then(function(res) {
+					.then(function (res) {
 						that.setDiagramJSON(res);
 					});
 			});
@@ -589,10 +593,10 @@ class App extends React.Component {
 			this.setState({
 				selectedCanvasDropdownFile2: selectedCanvasDropdownFile2,
 				canvasFileChooserVisible2: false
-			}, function() {
+			}, function () {
 				that.log("Submit canvas diagram", that.state.selectedCanvasDropdownFile2);
 				FormsService.getFileContent("diagrams", that.state.selectedCanvasDropdownFile2)
-					.then(function(res) {
+					.then(function (res) {
 						that.setDiagramJSON2(res);
 					});
 			});
@@ -611,10 +615,10 @@ class App extends React.Component {
 				selectedPaletteDropdownFile: selectedPaletteDropdownFile,
 				canvasPalette: "",
 				paletteFileChooserVisible: false
-			}, function() {
+			}, function () {
 				that.log("Submit canvas palette", that.state.selectedPaletteDropdownFile);
 				FormsService.getFileContent("palettes", that.state.selectedPaletteDropdownFile)
-					.then(function(res) {
+					.then(function (res) {
 						that.setPaletteJSON(res);
 					});
 			});
@@ -633,10 +637,10 @@ class App extends React.Component {
 				selectedPaletteDropdownFile2: selectedPaletteDropdownFile2,
 				canvasPalette2: "",
 				paletteFileChooserVisible2: false
-			}, function() {
+			}, function () {
 				that.log("Submit canvas palette", that.state.selectedPaletteDropdownFile2);
 				FormsService.getFileContent("palettes", that.state.selectedPaletteDropdownFile2)
-					.then(function(res) {
+					.then(function (res) {
 						that.setPaletteJSON2(res);
 					});
 			});
@@ -658,10 +662,10 @@ class App extends React.Component {
 				selectedPropertiesDropdownFile: selectedPropertiesDropdownFile,
 				selectedPropertiesFileCategory: selectedPropertiesFileCategory,
 				propertiesFileChooserVisible: false
-			}, function() {
+			}, function () {
 				that.log("Submit common properties file", that.state.selectedPropertiesDropdownFile);
 				FormsService.getFileContent(PARAMETER_DEFS, that.state.selectedPropertiesDropdownFile)
-					.then(function(res) {
+					.then(function (res) {
 						that.setPropertiesJSON(res);
 					});
 			});
@@ -694,7 +698,7 @@ class App extends React.Component {
 		const node = canvasController.getNode(nodeId, pipelineId);
 		const propertyDef = this.getPropertyDefName(node);
 		FormsService.getFileContent(propertyDef.type, propertyDef.fileName)
-			.then(function(res) {
+			.then(function (res) {
 				const response = res;
 				if (node) {
 					if (!isEmpty(node.parameters)) {
@@ -780,11 +784,11 @@ class App extends React.Component {
 		for (const nodeId in nodeMessages) {
 			if (has(nodeMessages, nodeId)) {
 				const node = nodeMessages[nodeId];
-				const errors = node.filter(function(message) {
+				const errors = node.filter(function (message) {
 					return message.type === NOTIFICATION_MESSAGE_TYPE.ERROR;
 				});
 
-				const warnings = node.filter(function(message) {
+				const warnings = node.filter(function (message) {
 					return message.type === NOTIFICATION_MESSAGE_TYPE.WARNING;
 				});
 
@@ -1080,7 +1084,7 @@ class App extends React.Component {
 			height: dims.height,
 			width: dims.width
 		})
-			.then(function(dataUrl) {
+			.then(function (dataUrl) {
 				const img = document.createElement("img"); // new Image();
 				img.src = dataUrl;
 
@@ -1088,7 +1092,7 @@ class App extends React.Component {
 				doc.addImage(img, "PNG", 10, 10, 190, 190 * heightToWidthRatio);
 				doc.save("common-canvas.pdf");
 			})
-			.catch(function(error) {
+			.catch(function (error) {
 				console.error("An error occurred create the PNG image.", error);
 			});
 	}
@@ -1107,11 +1111,11 @@ class App extends React.Component {
 		for (const nodeId in nodeMessages) {
 			if (has(nodeMessages, nodeId)) {
 				const nodeMessage = nodeMessages[nodeId];
-				const errors = nodeMessage.filter(function(message) {
+				const errors = nodeMessage.filter(function (message) {
 					return message.type === NOTIFICATION_MESSAGE_TYPE.ERROR;
 				});
 
-				const warnings = nodeMessage.filter(function(message) {
+				const warnings = nodeMessage.filter(function (message) {
 					return message.type === NOTIFICATION_MESSAGE_TYPE.WARNING;
 				});
 
@@ -1458,31 +1462,31 @@ class App extends React.Component {
 			let iconComponenet = null;
 			const actionId = data.buttonId;
 			switch (actionId) {
-			case "iconButton":
-				iconComponenet = Launch;
-				break;
-			case "increment1":
-				iconComponenet = <Add />;
-				break;
-			case "dm-update":
-				iconComponenet = <Restart />;
-				break;
-			default:
-				iconComponenet = null;
+				case "iconButton":
+					iconComponenet = Launch;
+					break;
+				case "increment1":
+					iconComponenet = <Add />;
+					break;
+				case "dm-update":
+					iconComponenet = <Restart />;
+					break;
+				default:
+					iconComponenet = null;
 			}
 			callbackIcon(iconComponenet);
 		} else if (data.type === "customDataTypeIcon") { // custom icon from consumer app for custom data type
 			let dataIcon = null;
 			const dataType = data.dataType;
 			switch (dataType) {
-			case "vectorType":
-				dataIcon = <SelectWindow />;
-				break;
-			case "customType":
-				dataIcon = <TextScale />;
-				break;
-			default:
-				dataIcon = <Help />;
+				case "vectorType":
+					dataIcon = <SelectWindow />;
+					break;
+				case "customType":
+					dataIcon = <TextScale />;
+					break;
+				default:
+					dataIcon = <Help />;
 			}
 			callbackIcon(dataIcon);
 		}
@@ -1556,8 +1560,8 @@ class App extends React.Component {
 		let defMenu = defaultMenu;
 		// Add custom menu items at proper positions: open, preview & execute
 		if (source.type === "node" &&
-				(source.selectedObjectIds.length === 1 ||
-					this.canvasController.isContextToolbarForNonSelectedObj(source))) {
+			(source.selectedObjectIds.length === 1 ||
+				this.canvasController.isContextToolbarForNonSelectedObj(source))) {
 			defMenu.unshift({ action: "editNode", label: this.getLabel("node_editNode", "CMI: Open") });
 			defMenu.splice(2, 0, { action: "previewNode", label: this.getLabel("node_previewNode", "CMI: Preview") });
 			defMenu.splice(8, 0, { action: "executeNode", label: this.getLabel("node_executeNode", "CMI: Execute") });
@@ -1583,66 +1587,66 @@ class App extends React.Component {
 		const testAsyncExecution = false; // Set to true to test asynchronous activity
 
 		switch (data.editType) {
-		case "editComment": {
-			// Uncomment to play with setting the command data.
-			// 	data.content += " -- Added text";
-			break;
-		}
-		case "createSuperNodeExternal":
-		case "convertSuperNodeLocalToExternal": {
-			// This code simulates some asynchronous activity by the host app.
-			if (testAsyncExecution) {
-				setTimeout(function(inData, app) {
-					inData.externalUrl = "external-flow-url-" + Date.now();
-					inData.externalPipelineFlowId = "external-pipeline-flow-id-" + Date.now();
-					app.canvasController.editAction(inData);
-				}, 2000, data, this);
-				return null;
+			case "editComment": {
+				// Uncomment to play with setting the command data.
+				// 	data.content += " -- Added text";
+				break;
 			}
-
-			data.externalUrl = "external-flow-url-" + Date.now();
-			data.externalPipelineFlowId = "external-pipeline-flow-id-" + Date.now();
-			break;
-		}
-		case "loadPipelineFlow":
-		case "expandSuperNodeInPlace":
-		case "displaySubPipeline":
-		case "deconstructSuperNode":
-		case "convertSuperNodeExternalToLocal": {
-			if (data.externalPipelineFlowLoad) {
+			case "createSuperNodeExternal":
+			case "convertSuperNodeLocalToExternal": {
 				// This code simulates some asynchronous activity by the host app.
 				if (testAsyncExecution) {
-					setTimeout(function(inData, app) {
-						inData.externalPipelineFlow = app.externalPipelineFlows[inData.externalUrl];
+					setTimeout(function (inData, app) {
+						inData.externalUrl = "external-flow-url-" + Date.now();
+						inData.externalPipelineFlowId = "external-pipeline-flow-id-" + Date.now();
 						app.canvasController.editAction(inData);
 					}, 2000, data, this);
 					return null;
 				}
 
-				data.externalPipelineFlow = this.externalPipelineFlows[data.externalUrl];
+				data.externalUrl = "external-flow-url-" + Date.now();
+				data.externalPipelineFlowId = "external-pipeline-flow-id-" + Date.now();
+				break;
 			}
-			break;
-		}
-		case "deleteSelectedObjects": {
-			data.selectedObjects.forEach((so) => {
-				if (so.type === "super_node" && so.subflow_ref.url) {
+			case "loadPipelineFlow":
+			case "expandSuperNodeInPlace":
+			case "displaySubPipeline":
+			case "deconstructSuperNode":
+			case "convertSuperNodeExternalToLocal": {
+				if (data.externalPipelineFlowLoad) {
+					// This code simulates some asynchronous activity by the host app.
+					if (testAsyncExecution) {
+						setTimeout(function (inData, app) {
+							inData.externalPipelineFlow = app.externalPipelineFlows[inData.externalUrl];
+							app.canvasController.editAction(inData);
+						}, 2000, data, this);
+						return null;
+					}
+
+					data.externalPipelineFlow = this.externalPipelineFlows[data.externalUrl];
+				}
+				break;
+			}
+			case "deleteSelectedObjects": {
+				data.selectedObjects.forEach((so) => {
+					if (so.type === "super_node" && so.subflow_ref.url) {
+						// App needs to make decision here if this command deletes the
+						// external pipeline flow in the repository.
+						window.alert("Delete external pipeline flow: " + so.subflow_ref.url);
+					}
+				});
+				break;
+			}
+			case "undo": {
+				if (command && command.data &&
+					command.data.editType === "convertSuperNodeExternalToLocal") {
 					// App needs to make decision here if this command deletes the
 					// external pipeline flow in the repository.
-					window.alert("Delete external pipeline flow: " + so.subflow_ref.url);
+					window.alert("Reinstate external pipeline flow.");
 				}
-			});
-			break;
-		}
-		case "undo": {
-			if (command && command.data &&
-				command.data.editType === "convertSuperNodeExternalToLocal") {
-				// App needs to make decision here if this command deletes the
-				// external pipeline flow in the repository.
-				window.alert("Reinstate external pipeline flow.");
+				break;
 			}
-			break;
-		}
-		default:
+			default:
 		}
 
 		return data;
@@ -1656,76 +1660,76 @@ class App extends React.Component {
 		}
 
 		switch (data.editType) {
-		case "commentsHide": {
-			this.canvasController.hideComments();
-			break;
-		}
-		case "commentsShow": {
-			this.canvasController.showComments();
-			break;
-		}
-		case "displaySubPipeline":
-		case "displayPreviousPipeline": {
-			this.setFlowNotificationMessages();
-			this.setBreadcrumbsDefinition();
-			break;
-		}
-		case "createTestHarnessNode": {
-			const nodeTemplate = canvasController.getPaletteNode(data.op);
-			if (nodeTemplate) {
-				const convertedTemplate = canvasController.convertNodeTemplate(nodeTemplate);
-				const action = {
-					editType: "createNode",
-					nodeTemplate: convertedTemplate,
-					pipelineId: data.pipelineId,
-					offsetX: data.offsetX,
-					offsetY: data.offsetY
-				};
-
-				canvasController.editActionHandler(action);
-			} else {
-				window.alert("A palette node could not be found for the dropped object. Load the 'modelerPalette.json' file and try again.");
+			case "commentsHide": {
+				this.canvasController.hideComments();
+				break;
 			}
-			break;
-		}
-		case "createFromExternalObject": {
-			const nodeTemplate = canvasController.getPaletteNode("variablefile");
-			if (nodeTemplate) {
-				const convertedTemplate = canvasController.convertNodeTemplate(nodeTemplate);
-				convertedTemplate.label = data.dataTransfer.files[0].name;
-				const action = {
-					editType: "createNode",
-					nodeTemplate: convertedTemplate,
-					pipelineId: data.pipelineId,
-					offsetX: data.offsetX,
-					offsetY: data.offsetY
-				};
-				canvasController.editActionHandler(action);
-			} else {
-				window.alert("A palette node could not be found for the dropped object. Load the 'modelerPalette.json' file and try again.");
+			case "commentsShow": {
+				this.canvasController.showComments();
+				break;
 			}
-			break;
-		}
-		case "editNode": {
-			this.editNodeHandler(data.targetObject.id, data.pipelineId, inExtraCanvas);
-			break;
-		}
-		case "createSuperNodeExternal":
-		case "convertSuperNodeLocalToExternal": {
-			this.externalPipelineFlows[data.externalUrl] =
-				this.canvasController.getExternalPipelineFlow(data.externalUrl);
-			break;
-		}
-		case "undo":
-		case "redo": {
-			if (get(command, "data.editType") === "displaySubPipeline") {
+			case "displaySubPipeline":
+			case "displayPreviousPipeline": {
+				this.setFlowNotificationMessages();
 				this.setBreadcrumbsDefinition();
+				break;
 			}
-			break;
-		}
-		default: {
-			// Do nothing
-		}
+			case "createTestHarnessNode": {
+				const nodeTemplate = canvasController.getPaletteNode(data.op);
+				if (nodeTemplate) {
+					const convertedTemplate = canvasController.convertNodeTemplate(nodeTemplate);
+					const action = {
+						editType: "createNode",
+						nodeTemplate: convertedTemplate,
+						pipelineId: data.pipelineId,
+						offsetX: data.offsetX,
+						offsetY: data.offsetY
+					};
+
+					canvasController.editActionHandler(action);
+				} else {
+					window.alert("A palette node could not be found for the dropped object. Load the 'modelerPalette.json' file and try again.");
+				}
+				break;
+			}
+			case "createFromExternalObject": {
+				const nodeTemplate = canvasController.getPaletteNode("variablefile");
+				if (nodeTemplate) {
+					const convertedTemplate = canvasController.convertNodeTemplate(nodeTemplate);
+					convertedTemplate.label = data.dataTransfer.files[0].name;
+					const action = {
+						editType: "createNode",
+						nodeTemplate: convertedTemplate,
+						pipelineId: data.pipelineId,
+						offsetX: data.offsetX,
+						offsetY: data.offsetY
+					};
+					canvasController.editActionHandler(action);
+				} else {
+					window.alert("A palette node could not be found for the dropped object. Load the 'modelerPalette.json' file and try again.");
+				}
+				break;
+			}
+			case "editNode": {
+				this.editNodeHandler(data.targetObject.id, data.pipelineId, inExtraCanvas);
+				break;
+			}
+			case "createSuperNodeExternal":
+			case "convertSuperNodeLocalToExternal": {
+				this.externalPipelineFlows[data.externalUrl] =
+					this.canvasController.getExternalPipelineFlow(data.externalUrl);
+				break;
+			}
+			case "undo":
+			case "redo": {
+				if (get(command, "data.editType") === "displaySubPipeline") {
+					this.setBreadcrumbsDefinition();
+				}
+				break;
+			}
+			default: {
+				// Do nothing
+			}
 		}
 
 		this.log("editActionHandler(): " + data.editType, data);
@@ -1851,7 +1855,7 @@ class App extends React.Component {
 			} else {
 				sourceString = "detached source";
 				if (data.link.srcObj && data.link.srcObj.outputs) {
-					const srcPort = !data.link.srcObj.outputs ? null : data.link.srcObj.outputs.find(function(port) {
+					const srcPort = !data.link.srcObj.outputs ? null : data.link.srcObj.outputs.find(function (port) {
 						return port.id === data.link.srcNodePortId;
 					});
 					sourceString = `'${data.link.srcObj.label}'` + (srcPort && srcPort.label ? `, port '${srcPort.label}'` : "");
@@ -1859,7 +1863,7 @@ class App extends React.Component {
 
 				targetString = "detached target";
 				if (data.link.trgNode && data.link.trgNode.inputs) {
-					const trgPort = data.link.trgNode.inputs.find(function(port) {
+					const trgPort = data.link.trgNode.inputs.find(function (port) {
 						return port.id === data.link.trgNodePortId;
 					});
 					targetString = `'${data.link.trgNode.label}'` + (trgPort && trgPort.label ? `, port '${trgPort.label}'` : "");
@@ -2010,17 +2014,17 @@ class App extends React.Component {
 			const propertyId = { name: data.parameter_ref };
 			let value = propertiesController.getPropertyValue(propertyId);
 			switch (value) {
-			case "Full":
-				value = "Waning";
-				break;
-			case "Waning":
-				value = "New";
-				break;
-			case "New":
-				value = "Waxing";
-				break;
-			default:
-				value = "Full";
+				case "Full":
+					value = "Waning";
+					break;
+				case "Waning":
+					value = "New";
+					break;
+				case "New":
+					value = "Waxing";
+					break;
+				default:
+					value = "Full";
 			}
 			propertiesController.updatePropertyValue(propertyId, value);
 		}
@@ -2028,21 +2032,21 @@ class App extends React.Component {
 			const propertyId = { name: data.parameter_ref };
 			let value = propertiesController.getPropertyValue(propertyId);
 			switch (value) {
-			case "Perseids":
-				value = "Orionids";
-				break;
-			case "Orionids":
-				value = "Leonids";
-				break;
-			case "Leonids":
-				value = "Geminids";
-				break;
-			case "Geminids":
-				value = "Lyrids";
-				break;
+				case "Perseids":
+					value = "Orionids";
+					break;
+				case "Orionids":
+					value = "Leonids";
+					break;
+				case "Leonids":
+					value = "Geminids";
+					break;
+				case "Geminids":
+					value = "Lyrids";
+					break;
 
-			default:
-				value = "Perseids";
+				default:
+					value = "Perseids";
 			}
 			propertiesController.updatePropertyValue(propertyId, value);
 		}
@@ -2050,14 +2054,14 @@ class App extends React.Component {
 			const propertyId = { name: data.parameter_ref };
 			let value = propertiesController.getPropertyValue(propertyId);
 			switch (value) {
-			case "Dollar":
-				value = "Euro";
-				break;
-			case "Euro":
-				value = "Rupees";
-				break;
-			default:
-				value = "Dollar";
+				case "Dollar":
+					value = "Euro";
+					break;
+				case "Euro":
+					value = "Rupees";
+					break;
+				default:
+					value = "Dollar";
 			}
 			propertiesController.updatePropertyValue(propertyId, value);
 		}
@@ -2315,20 +2319,20 @@ class App extends React.Component {
 			];
 
 			const saveReloadTooltip =
-					(<div>
-						<br />
-						<p style={ { fontSize: "12px" } } ><strong>jjennings</strong> saved the flow at 8:18AM.</p>
-						<br />
-						<ul>
-							<li><p style={ { fontSize: "12px" } }><strong>Reload</strong> to view changes. Caution: you will lose your changes.</p></li>
-							<li><p style={ { fontSize: "12px" } } ><strong>Save as</strong> to save your changes as a new flow</p></li>
-						</ul>
-						<br />
-						<div style={ { display: "flex", justifyContent: "space-between" } }>
-							<Button kind="secondary" size="sm" style={ { width: "30px", height: "10px", color: "lightblue" } }>Save</Button>
-							<Button kind="danger" size="sm" style={ { width: "30px", height: "10px" } }>Reload</Button>
-						</div>
-					</div>);
+				(<div>
+					<br />
+					<p style={{ fontSize: "12px" }} ><strong>jjennings</strong> saved the flow at 8:18AM.</p>
+					<br />
+					<ul>
+						<li><p style={{ fontSize: "12px" }}><strong>Reload</strong> to view changes. Caution: you will lose your changes.</p></li>
+						<li><p style={{ fontSize: "12px" }} ><strong>Save as</strong> to save your changes as a new flow</p></li>
+					</ul>
+					<br />
+					<div style={{ display: "flex", justifyContent: "space-between" }}>
+						<Button kind="secondary" size="sm" style={{ width: "30px", height: "10px", color: "lightblue" }}>Save</Button>
+						<Button kind="danger" size="sm" style={{ width: "30px", height: "10px" }}>Reload</Button>
+					</div>
+				</div>);
 
 			toolbarConfig = {
 				leftBar: [
@@ -2345,16 +2349,22 @@ class App extends React.Component {
 					{ action: "undo", label: "Undo", enable: true, purpose: "dual", subPanel: AppSettingsPanel, subPanelData: {} },
 					{ action: "redo", label: "Redo", enable: true },
 					{ divider: true },
-					{ action: "settingspanel", iconEnabled: (<Settings />), label: "Settings", enable: true,
-						subPanel: AppSettingsPanel, subPanelData: { saveData: (settings) => window.alert("Panel data received by application.\n" + settings) } },
+					{
+						action: "settingspanel", iconEnabled: (<Settings />), label: "Settings", enable: true,
+						subPanel: AppSettingsPanel, subPanelData: { saveData: (settings) => window.alert("Panel data received by application.\n" + settings) }
+					},
 					{ divider: true },
-					{ action: "text-size-submenu", incLabelWithIcon: "after", iconEnabled: (<TextScale size={32} />), label: "Text Size", enable: true,
-						subMenu: subMenuTextSize, closeSubAreaOnClick: true },
+					{
+						action: "text-size-submenu", incLabelWithIcon: "after", iconEnabled: (<TextScale size={32} />), label: "Text Size", enable: true,
+						subMenu: subMenuTextSize, closeSubAreaOnClick: true
+					},
 					{ divider: true },
 					{ action: "size-submenu", iconEnabled: (<Scale size={32} />), label: "Size", enable: true, subMenu: subMenuSize },
 					{ divider: true },
-					{ action: "color-subpanel", iconEnabled: (<ColorPalette size={32} />), label: "Color picker", enable: true,
-						subPanel: ColorPicker, subPanelData: { clickActionHandler: (color) => window.alert("Color selected = " + color) } },
+					{
+						action: "color-subpanel", iconEnabled: (<ColorPalette size={32} />), label: "Color picker", enable: true,
+						subPanel: ColorPicker, subPanelData: { clickActionHandler: (color) => window.alert("Color selected = " + color) }
+					},
 					{ divider: true },
 					{ action: "save", iconEnabled: (<Save size={32} />), label: "Save", enable: true, tooltip: saveReloadTooltip }
 				],
@@ -2403,7 +2413,8 @@ class App extends React.Component {
 				{ action: "undo", label: "Undo" },
 				{ action: "redo", label: "Redo" },
 				{ divider: true },
-				{ action: "togglePalette",
+				{
+					action: "togglePalette",
 					label: this.canvasController.isPaletteOpen() ? "Close Palette" : "Open Palette",
 					iconEnabled: this.canvasController.isPaletteOpen() ? (<SubtractAlt />) : (<AddAlt />),
 					incLabelWithIcon: "after"
@@ -2745,17 +2756,17 @@ class App extends React.Component {
 						<span className="harness-version">{todaysDateFormatted}</span>
 					</li>
 					<li tabIndex="0" className="harness-navbar-li harness-nav-divider" data-tooltip-id="toolbar-tooltip" data-tooltip-content={consoleLabel}>
-						<a onClick={this.openConsole.bind(this) }>
+						<a onClick={this.openConsole.bind(this)}>
 							<OpenPanelFilledBottom size={16} />
 						</a>
 					</li>
 					<li tabIndex="0" className="harness-navbar-li" data-tooltip-id="toolbar-tooltip" data-tooltip-content={downloadFlowLabel}>
-						<a onClick={this.downloadPipelineFlow.bind(this) }>
+						<a onClick={this.downloadPipelineFlow.bind(this)}>
 							<Download size={16} />
 						</a>
 					</li>
 					<li tabIndex="0" className="harness-navbar-li" data-tooltip-id="toolbar-tooltip" data-tooltip-content={downloadPaletteLabel}>
-						<a onClick={this.downloadPalette.bind(this) }>
+						<a onClick={this.downloadPalette.bind(this)}>
 							<Download size={16} />
 						</a>
 					</li>
@@ -2776,21 +2787,21 @@ class App extends React.Component {
 					<li id="harness-action-bar-sidepanel-properties" className="harness-navbar-li harness-nav-divider harness-action-bar-sidepanel"
 						data-tooltip-id="toolbar-tooltip" data-tooltip-content={commonPropertiesModalLabel}
 					>
-						<a onClick={this.sidePanelProperties.bind(this) }>
+						<a onClick={this.sidePanelProperties.bind(this)}>
 							<GuiManagement size={16} />
 						</a>
 					</li>
 					<li id="harness-action-bar-sidepanel-api" className="harness-navbar-li harness-action-bar-sidepanel"
 						data-tooltip-id="toolbar-tooltip" data-tooltip-content={apiLabel}
 					>
-						<a onClick={this.sidePanelAPI.bind(this) }>
+						<a onClick={this.sidePanelAPI.bind(this)}>
 							<Api size={16} />
 						</a>
 					</li>
 					<li id="harness-action-bar-sidepanel-canvas" className="harness-navbar-li harness-nav-divider harness-action-bar-sidepanel"
 						data-tooltip-id="toolbar-tooltip" data-tooltip-content={commonCanvasLabel}
 					>
-						<a onClick={this.sidePanelCanvas.bind(this) }>
+						<a onClick={this.sidePanelCanvas.bind(this)}>
 							<FlowData size={16} />
 						</a>
 					</li>
@@ -3007,6 +3018,13 @@ class App extends React.Component {
 		} else if (this.state.selectedExampleApp === EXAMPLE_APP_WYSIWYG) {
 			firstCanvas = (
 				<WysiwygCommentsCanvas
+					ref={this.canvasRef}
+					config={commonCanvasConfig}
+				/>
+			);
+		} else if (this.state.selectedExampleApp === EXAMPLE_APP_WORKFLOW) {
+			firstCanvas = (
+				<WorkflowCanvas
 					ref={this.canvasRef}
 					config={commonCanvasConfig}
 				/>

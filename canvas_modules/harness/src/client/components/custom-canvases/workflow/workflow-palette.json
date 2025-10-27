@@ -1,0 +1,150 @@
+{
+  "version": "3.0",
+  "categories": [
+    {
+      "label": "Start and end",
+      "description": "Contains the various Card Nodes from the Carbon Charts library",
+      "image": "images/custom-canvases/flows/palette/icons/palette-output.svg",
+      "id": "card_nodes",
+      "node_types": [
+        {
+          "id": "",
+          "type": "execution_node",
+          "op": "state",
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ],
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": 1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "app_data": {
+            "ui_data": {
+              "label": "Start node",
+              "description": "Card node from Carbon Charts library.",
+              "image": "images/custom-canvases/flows/palette/icons/dataassetimport.svg",
+              "x_pos": 0,
+              "y_pos": 0
+            }
+          }
+        },
+        {
+          "id": "",
+          "type": "execution_node",
+          "op": "state",
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ],
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": 1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "app_data": {
+            "ui_data": {
+              "label": "End node",
+              "description": "Card node with an outline.",
+              "image": "images/custom-canvases/flows/palette/icons/userinput.svg",
+              "x_pos": 0,
+              "y_pos": 0
+            }
+          }
+        }
+      ]
+    },
+    {
+      "label": "Activities",
+      "description": "This category defines Shape Nodes from the Carbon Charts library.",
+      "image": "images/custom-canvases/flows/palette/icons/palette-modeling.svg",
+      "id": "shape-nodes",
+      "node_types": [
+        {
+          "id": "",
+          "type": "execution_node",
+          "op": "usertask",
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": 1
+                  },
+                  "label": "Input Port"
+                }
+              }
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 0,
+                    "max": -1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ],
+          "app_data": {
+            "react_nodes_data": {
+              "shape": "square"
+            },
+            "ui_data": {
+              "label": "User Task",
+              "description": "A square shape node from the carbon charts library",
+              "image": "images/custom-canvases/flows/palette/icons/select.svg",
+              "x_pos": 0,
+              "y_pos": 0
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
