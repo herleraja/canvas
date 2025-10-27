@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import { CommonCanvas, CanvasController } from "common-canvas"; // eslint-disable-line import/no-unresolved
@@ -25,26 +25,28 @@ import UsertaskNodeWrapper from "./wrapper-usertask-node.jsx";
 // import ReactNodesFlow from "./workflow-flow.json";
 import ReactNodesPalette from "./workflow-palette.json";
 import FlowsProperties from "./flows-properties.jsx";
+import LinksProperties from "./link-properties.jsx";
 
 const WorkflowCanvas = (props) => {
-
-	const propertiesRef = React.createRef();
+	const [selectedObject, setSelectedObject] = useState(null); // 👈 track selected node/link
 
 	const canvasController = React.useMemo(() => {
 		const instance = new CanvasController();
 		// instance.setPipelineFlow(ReactNodesFlow);
 		instance.setPipelineFlowPalette(ReactNodesPalette);
+		instance.openPalette();
 		return instance;
 	}, []);
 
 	const getConfig = () => {
 		const config = Object.assign({}, props.config, {
-			enableParentClass: "react-nodes-carbon",
+			editDecorationLabel: true,
+			enableParentClass: "workflow",
 			enableNodeFormatType: "Vertical",
 			enableLinkType: "Curve",
 			enableLinkDirection: "LeftRight",
 			enableSnapToGridType: "After",
-			enableLinkSelection: "None",
+			enableLinkSelection: "LinkOnly",
 			enableLinkReplaceOnNewConnection: true,
 			paletteInitialState: true,
 			enableResizableNodes: true,
@@ -56,7 +58,8 @@ const WorkflowCanvas = (props) => {
 				palette: true,
 				nodes: true,
 				ports: false,
-				links: false
+				links: false,
+				decorations: true,
 			},
 			enableNodeLayout: {
 				drawNodeLinkLineFromTo: "node_center",
@@ -99,6 +102,7 @@ const WorkflowCanvas = (props) => {
 	};
 
 	const layoutHandler = (node) => {
+		console.log("🚀 ~ layoutHandler ~ node:", node)
 		if (node?.op && node.op.includes("shape-node")) {
 			const config = {
 				// selectionPath: "M -4 -4 h 36 v 36 h -36 Z",
@@ -118,11 +122,49 @@ const WorkflowCanvas = (props) => {
 		return null;
 	};
 
+	const renderRightFlyoutContent = () => {
+		if (!selectedObject) {
+			return null;
+		}
+
+		console.log("🚀 ~ renderRightFlyoutContent ~ selectedObject:", selectedObject);
+		if (selectedObject.type === "node") {
+			return (
+				<FlowsProperties
+					canvasController={canvasController}
+					selectedNodeId={selectedObject.id}
+					pipelineId={selectedObject.pipelineId}
+				/>
+			);
+		}
+
+		if (selectedObject.type === "link") {
+			return (
+				<LinksProperties
+					canvasController={canvasController}
+					selectedLinkId={selectedObject.id}
+					pipelineId={selectedObject.pipelineId}
+				/>
+			);
+		}
+
+		return null;
+	};
+
 	const clickActionHandler = (source) => {
-		if (propertiesRef.current &&
-			source.objectType === "node" &&
-			source.clickType === "DOUBLE_CLICK") {
-			propertiesRef.current.editNodeHandler(source.id, source.pipelineId);
+		// Update the selected item
+		if (source.objectType === "node" && source.clickType === "DOUBLE_CLICK") {
+			setSelectedObject({
+				type: "node",
+				id: source.id,
+				pipelineId: source.pipelineId,
+			});
+		} else if (source.objectType === "link" && source.clickType === "SINGLE_CLICK") {
+			setSelectedObject({
+				type: "link",
+				id: source.id,
+				pipelineId: source.pipelineId,
+			});
 		}
 	};
 
@@ -131,7 +173,7 @@ const WorkflowCanvas = (props) => {
 			canvasController={canvasController}
 			config={getConfig()}
 			layoutHandler={layoutHandler}
-			rightFlyoutContent={<FlowsProperties ref={propertiesRef} canvasController={canvasController} />}
+			rightFlyoutContent={renderRightFlyoutContent()}
 			clickActionHandler={clickActionHandler}
 			showRightFlyout
 		/>

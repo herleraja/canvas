@@ -18,7 +18,7 @@
 @use "../../../../../assets/styles/carbon.scss";
 @use "@carbon/charts/scss/index.scss";
 
-.react-nodes-carbon {
+.workflow {
 
 	.d3-node-group {
 		.card-node {
@@ -155,18 +155,22 @@
 		}
 	}
 
-	.d3-link-group.d3-data-link {
-		.d3-link-line,
-		.d3-link-line-arrow-head {
-			stroke: carbon.$layer-selected-inverse;
-			stroke-width: 1px;
-		}
+	.d3-link-group .d3-link-line,
+	.d3-link-group .d3-link-line-arrow-head {
+		stroke: #AFAFAF;
+		stroke-width: 1;
+	}
 
-		&:hover {
-			.d3-link-line,
-			.d3-link-line-arrow-head {
-				stroke-width: 2px;
-			}
-		}
+	.d3-link-group:hover .d3-link-line,
+	.d3-link-group:hover .d3-link-line-arrow-head {
+		stroke: #95C3E9;
+		stroke-width: 2;
+	}
+
+	// Style line and arrow head when link is selected.
+	.d3-link-group[data-selected] .d3-link-line,
+	.d3-link-group[data-selected] .d3-link-line-arrow-head {
+		stroke: #4291E1;
+		stroke-width: 2;
 	}
 }

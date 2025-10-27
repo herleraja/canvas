@@ -23,7 +23,9 @@ import FormsService from "../../../services/FormsService";
 import { PARAMETER_DEFS, CUSTOM } from "../../../constants/harness-constants.js";
 import CustomTableControl from "../../../components/custom-controls/CustomTableControl";
 
-const FlowsProperties = ({ canvasController, selectedNodeId, pipelineId }) => {
+const LinkProperties = ({ canvasController, selectedLinkId, pipelineId }) => {
+	console.log("🚀 ~ LinkProperties ~ pipelineId:", pipelineId)
+	console.log("🚀 ~ LinkProperties ~ selectedNodeId:", selectedLinkId)
 	const [propertiesInfo, setPropertiesInfo] = useState({});
 	const [availableParamDefs, setAvailableParamDefs] = useState([]);
 	const [showPropertiesDialog, setShowPropertiesDialog] = useState(false);
@@ -34,38 +36,40 @@ const FlowsProperties = ({ canvasController, selectedNodeId, pipelineId }) => {
 	}, []);
 
 	useEffect(() => {
-		if (selectedNodeId) {
-			loadNodeProperties(selectedNodeId);
+		if (selectedLinkId) {
+			loadNodeProperties(selectedLinkId);
 		} else {
 			setShowPropertiesDialog(false);
 			setPropertiesInfo({});
 		}
-	}, [selectedNodeId, pipelineId]);
+	}, [selectedLinkId, pipelineId]);
 
-	const getPropertyDefName = (node) => {
-		if (node?.op) {
-			const foundName = availableParamDefs.find((name) => name.startsWith(node.op));
-			if (foundName) {
-				return { fileName: foundName, type: PARAMETER_DEFS };
-			}
-		}
+	const getPropertyDefName = (link) => {
+		console.log("🚀 ~ getPropertyDefName ~ link:", link)
+		
+		// if (node?.op) {
+		// 	const foundName = availableParamDefs.find((name) => name.startsWith(node.op));
+		// 	if (foundName) {
+		// 		return { fileName: foundName, type: PARAMETER_DEFS };
+		// 	}
+		// }
 		return { fileName: "default.json", type: PARAMETER_DEFS };
 	};
 
-	const loadNodeProperties = (nodeId) => {
-		const node = canvasController.getNode(nodeId, pipelineId);
-		const propertyDef = getPropertyDefName(node);
+	const loadNodeProperties = (linkId) => {
+		const link = canvasController.getLink(linkId, pipelineId);
+		const propertyDef = getPropertyDefName(link);
 		FormsService.getFileContent(propertyDef.type, propertyDef.fileName).then((properties) => {
-			if (node) {
-				properties.current_parameters = node.parameters || {};
-				properties.current_ui_parameters = node.uiParameters || {};
-				properties.titleDefinition = { title: node.label };
+			if (link) {
+				properties.current_parameters = link.parameters || {};
+				properties.current_ui_parameters = link.uiParameters || {};
+				properties.titleDefinition = { title: link.label };
 			}
 			setPropertiesInfo({
 				title: <FormattedMessage id="dialog.nodePropertiesTitle" />,
 				formData: properties.formData,
 				parameterDef: properties,
-				appData: { nodeId, pipelineId, inExtraCanvas: false },
+				appData: { link, pipelineId, inExtraCanvas: false },
 				initialEditorSize: "small"
 			});
 			setShowPropertiesDialog(true);
@@ -91,6 +95,8 @@ const FlowsProperties = ({ canvasController, selectedNodeId, pipelineId }) => {
 		iconSwitch: false
 	});
 
+	console.log("🚀 ~ LinkProperties ~ propertiesInfo:", propertiesInfo)
+	console.log("🚀 ~ LinkProperties ~ showPropertiesDialog:", showPropertiesDialog)
 	if (!showPropertiesDialog || isEmpty(propertiesInfo)) {
 		return null;
 	}
@@ -102,11 +108,16 @@ const FlowsProperties = ({ canvasController, selectedNodeId, pipelineId }) => {
 			customControls={[CustomTableControl]}
 			callbacks={{
 				applyPropertyChanges: (form, appData, additionalInfo, undoInfo, uiProperties) => {
-					if (appData?.nodeId) {
-						canvasController.setNodeParameters(appData.nodeId, form, appData.pipelineId);
-						canvasController.setNodeLabel(appData.nodeId, additionalInfo.title, appData.pipelineId);
-						canvasController.setNodeMessages(appData.nodeId, additionalInfo.messages, appData.pipelineId);
-						canvasController.setNodeUiParameters(appData.nodeId, uiProperties, appData.pipelineId);
+					console.log("🚀 ~ LinkProperties ~ appData:", appData);
+					if (appData?.link?.id) {
+							console.log("🚀 ~ LinkProperties ~ appData: SAVED");
+						// canvasController.setLinkProperties(appData.linkId, form, appData.pipelineId);
+						// canvasController.setLinkProperties(appData.link.id, { test: 123 }, appData.pipelineId);
+						canvasController.setLinkDecorations(appData.link.id,
+							[{ "id": "dec1", "position": "source", "class_name": "dec-class", "hotspot": true, label: "asdasdasdasdasd" }
+							], appData.pipelinId);
+
+
 					}
 				},
 				closePropertiesDialog: () => {
@@ -118,10 +129,10 @@ const FlowsProperties = ({ canvasController, selectedNodeId, pipelineId }) => {
 	);
 };
 
-FlowsProperties.propTypes = {
+LinkProperties.propTypes = {
 	canvasController: PropTypes.object.isRequired,
-	selectedNodeId: PropTypes.string,
+	selectedLinkId: PropTypes.string,
 	pipelineId: PropTypes.string
 };
 
-export default FlowsProperties;
+export default LinkProperties;
