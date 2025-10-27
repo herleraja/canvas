@@ -45,6 +45,7 @@ import {
 	EXAMPLE_APP_WYSIWYG,
 	EXAMPLE_APP_REACT_NODES_DRAGGABLE,
 	EXAMPLE_APP_REACT_NODES_CARBON,
+	EXAMPLE_APP_REACT_NODES_CARBON_WITH_BPMN,
 	EXAMPLE_APP_REACT_NODES_MAPPING,
 	TIP_PALETTE_CATEGORIES,
 	TIP_PALETTE_NODE_TEMPLATES,
@@ -388,16 +389,16 @@ export default class SidePanelForms extends React.Component {
 		let key = 1;
 		const groupOptions = [];
 		const choosefromlocation = [];
-		options.push(<SelectItem key = "choose-an-option" text = "Choose an option..." value = "Choose an option..." />);
+		options.push(<SelectItem key="choose-an-option" text="Choose an option..." value="Choose an option..." />);
 		choosefromlocation.push(
-			<SelectItem key={"choose-from-location"} text = "Choose From Location" value = {CHOOSE_FROM_LOCATION} />);
+			<SelectItem key={"choose-from-location"} text="Choose From Location" value={CHOOSE_FROM_LOCATION} />);
 		options.push(
-			<SelectItemGroup key ={"choose-file-option"} label = {LOCAL_FILE_OPTION}>{choosefromlocation}
+			<SelectItemGroup key={"choose-file-option"} label={LOCAL_FILE_OPTION}>{choosefromlocation}
 			</SelectItemGroup>);
 		for (const option of optionsInput) {
 			groupOptions.push(<SelectItem key={"param-def-option-" + key++} text={option} value={option} />);
 		}
-		options.push(<SelectItemGroup key ={"form-option"} label = {typeLabel}>{groupOptions}</SelectItemGroup>);
+		options.push(<SelectItemGroup key={"form-option"} label={typeLabel}>{groupOptions}</SelectItemGroup>);
 		return options;
 	}
 
@@ -422,7 +423,7 @@ export default class SidePanelForms extends React.Component {
 						disabled={!this.isReadyToSubmitCanvasData()}
 						onClick={this.submitCanvas.bind(this)}
 					>
-					Submit
+						Submit
 					</Button>
 				</div>
 			</div>);
@@ -445,7 +446,7 @@ export default class SidePanelForms extends React.Component {
 						disabled={!this.isReadyToSubmitPaletteData()}
 						onClick={this.submitPalette.bind(this)}
 					>
-					Submit
+						Submit
 					</Button>
 				</div>
 			</div>);
@@ -496,7 +497,7 @@ export default class SidePanelForms extends React.Component {
 						disabled={!this.isReadyToSubmitCanvasData2()}
 						onClick={this.submitCanvas2.bind(this)}
 					>
-					Submit
+						Submit
 					</Button>
 				</div>
 			</div>);
@@ -520,7 +521,7 @@ export default class SidePanelForms extends React.Component {
 						disabled={!this.isReadyToSubmitPaletteData2()}
 						onClick={this.submitPalette2.bind(this)}
 					>
-					Submit
+						Submit
 					</Button>
 				</div>
 			</div>);
@@ -584,11 +585,11 @@ export default class SidePanelForms extends React.Component {
 				</FormGroup>
 			</div>
 			<div className="harness-sidepanel-spacer" />
-			<div style={pad}className="harness-sidepanel-clear-saved-storage">
+			<div style={pad} className="harness-sidepanel-clear-saved-storage">
 				<Button size="sm"
 					onClick={this.props.canvasConfig.clearSavedZoomValues}
 				>
-				Clear local storage zoom values
+					Clear local storage zoom values
 				</Button>
 			</div>
 		</div>
@@ -596,11 +597,11 @@ export default class SidePanelForms extends React.Component {
 
 		var saveToPdf = (<div>
 			<div className="harness-sidepanel-spacer" />
-			<div style={pad}className="harness-sidepanel-save-to-pdf">
+			<div style={pad} className="harness-sidepanel-save-to-pdf">
 				<Button size="sm"
 					onClick={this.props.canvasConfig.saveToPdf}
 				>
-				Save to PDF
+					Save to PDF
 				</Button>
 			</div>
 		</div>
@@ -1449,6 +1450,10 @@ export default class SidePanelForms extends React.Component {
 					<RadioButton
 						value={EXAMPLE_APP_REACT_NODES_CARBON}
 						labelText={EXAMPLE_APP_REACT_NODES_CARBON}
+					/>
+					<RadioButton
+						value={EXAMPLE_APP_REACT_NODES_CARBON_WITH_BPMN}
+						labelText={EXAMPLE_APP_REACT_NODES_CARBON_WITH_BPMN}
 					/>
 					<RadioButton
 						value={EXAMPLE_APP_REACT_NODES_MAPPING}

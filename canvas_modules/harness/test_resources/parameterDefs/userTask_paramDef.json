@@ -1,0 +1,175 @@
+{
+	"titleDefinition": {
+		"title": "User task"
+	},
+	"current_parameters": {
+		"workFlowConfigTitle": "",
+		"userTaskInboxTitle": "",
+		"workFlowConfigDescription": "",
+		"userTaskInboxDescription": ""
+	},
+	"parameters": [
+		{
+			"id": "workFlowConfigTitle",
+			"type": "string",
+			"default": "",
+			"required": false
+		},
+		{
+			"id": "userTaskInboxTitle",
+			"type": "string",
+			"default": "",
+			"required": false
+		},
+		{
+			"id": "workFlowConfigDescription",
+			"type": "string",
+			"default": "",
+			"required": false
+		},
+		{
+			"id": "userTaskInboxDescription",
+			"type": "string",
+			"default": "",
+			"required": false
+		}
+	],
+	"uihints": {
+		"id": "org.apache.spark.ml.ibm.transformers.Sample",
+		"icon": "images/transformationspark.svg",
+		"parameter_info": [
+			{
+				"parameter_ref": "userTaskInboxTitle",
+				"label": {
+					"resource_key": "title"
+				},
+				"place_holder_text": {
+					"resource_key": "placeholder.userTaskInboxTitle"
+				}
+			},
+			{
+				"parameter_ref": "userTaskInboxDescription",
+				"label": {
+					"resource_key": "description"
+				},
+				"control": "textarea",
+				"place_holder_text": {
+					"resource_key": "placeholder.userTaskInboxDescription"
+				}
+			},
+			{
+				"parameter_ref": "workFlowConfigTitle",
+				"label": {
+					"resource_key": "title"
+				},
+				"place_holder_text": {
+					"resource_key": "placeholder.workFlowConfigTitle"
+				}
+			},
+			{
+				"parameter_ref": "workFlowConfigDescription",
+				"label": {
+					"resource_key": "description"
+				},
+				"control": "textarea",
+				"place_holder_text": {
+					"resource_key": "placeholder.workFlowConfigDescription"
+				}
+			}
+		],
+		"group_info": [
+			{
+				"id": "workFlowConfigiguration",
+				"label": {
+					"default": "Workflow configuration"
+				},
+				"type": "panels",
+				"group_info": [
+					{
+						"id": "workFlowConfigiguration-settings",
+						"type": "controls",
+						"parameter_refs": [
+							"workFlowConfigTitle",
+							"workFlowConfigDescription"
+						]
+					}
+				]
+			},
+			{
+				"id": "userTaskInbox",
+				"label": {
+					"default": "User task inbox"
+				},
+				"type": "panels",
+				"group_info": [
+					{
+						"id": "userTaskInbox-settings",
+						"type": "controls",
+						"parameter_refs": [
+							"userTaskInboxTitle",
+							"userTaskInboxDescription"
+						]
+					}
+				]
+			}
+		],
+		"label": {
+			"default": "User task "
+		},
+		"description": {
+			"default": "User task description"
+		},
+		"help": {
+			"id": "link_for_description",
+			"data": {
+				"url": "randomUrl"
+			}
+		}
+	},
+	"conditions": [
+		{
+			"validation": {
+				"fail_message": {
+					"type": "error",
+					"focus_parameter_ref": "workFlowConfigTitle",
+					"message": {
+						"resource_key": "error.workFlowConfigTitleRequired"
+					}
+				},
+				"evaluate": {
+					"condition": {
+						"parameter_ref": "workFlowConfigTitle",
+						"op": "isNotEmpty"
+					}
+				}
+			}
+		},
+		{
+			"validation": {
+				"fail_message": {
+					"type": "error",
+					"focus_parameter_ref": "userTaskInboxTitle",
+					"message": {
+						"resource_key": "error.userTaskInboxTitleRequired"
+					}
+				},
+				"evaluate": {
+					"condition": {
+						"parameter_ref": "userTaskInboxTitle",
+						"op": "isNotEmpty"
+					}
+				}
+			}
+		}
+	],
+	"resources": {
+		"title": "Title",
+		"description": "Description",
+		"placeholder.userTaskInboxTitle": "Enter a title to display in task inbox page",
+		"placeholder.userTaskInboxDescription": "Enter a description to display in task inbox page",
+		"placeholder.workFlowConfigTitle": "Enter a title to display in workflow configuration page",
+		"placeholder.workFlowConfigDescription": "Enter a description to display in workflow configuration page",
+		"error.workFlowConfigTitleRequired": "Workflow configuration title cannot be empty",
+		"error.userTaskInboxTitleRequired": "User task inbox title cannot be empty"
+	}
+}

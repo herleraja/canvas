@@ -50,6 +50,7 @@ _defineConstant("EXAMPLE_APP_NETWORK", "Network");
 _defineConstant("EXAMPLE_APP_WYSIWYG", "WYSIWYG Comments");
 _defineConstant("EXAMPLE_APP_REACT_NODES_DRAGGABLE", "React Nodes - Draggable");
 _defineConstant("EXAMPLE_APP_REACT_NODES_CARBON", "React Nodes - Carbon Charts");
+_defineConstant("EXAMPLE_APP_REACT_NODES_CARBON_WITH_BPMN", "React Nodes - Carbon Charts with BPMN");
 _defineConstant("EXAMPLE_APP_REACT_NODES_MAPPING", "React Nodes - Mapping");
 
 _defineConstant("PROPERTIES_FLYOUT", "Flyout");

@@ -1,0 +1,233 @@
+{
+  "doc_type": "pipeline",
+  "version": "3.0",
+  "json_schema": "https://api.dataplatform.ibm.com/schemas/common-pipeline/pipeline-flow/pipeline-flow-v3-schema.json",
+  "id": "876523198-c3d2-4da7-ab5a-2b9573e5e159",
+  "primary_pipeline": "3ae0efae-9a3c-4a1a-9fd9-185f442a81aa",
+  "pipelines": [
+    {
+      "id": "3ae0efae-9a3c-4a1a-9fd9-185f442a81aa",
+      "nodes": [
+        {
+          "id": "2254af67-6e80-42ed-911a-b8f4c8e8af86",
+          "type": "execution_node",
+          "op": "startEvent",
+          "app_data": {
+            "react_nodes_data": {
+              "shape": "circle"
+            },
+            "ui_data": {
+              "label": "Start event",
+              "image": "/images/custom-canvases/stages/decorations/dragStateArrow.svg",
+              "x_pos": 110,
+              "y_pos": 80,
+              "description": "End event description."
+            }
+          },
+          "inputs": [],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 1,
+                    "max": 1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "6f8b9b23-c36a-453a-a6ed-bffa8501cf1b",
+          "type": "execution_node",
+          "op": "userTask",
+          "app_data": {
+            "react_nodes_data": {
+              "shape": "card",
+              "color": "#EAC348"
+            },
+            "ui_data": {
+              "label": "Review task",
+              "image": "images/custom-canvases/flows/palette/icons/userinput.svg",
+              "x_pos": 220,
+              "y_pos": 160,
+              "description": "User task"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 1,
+                    "max": 1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "f3860434-4aa1-4a2e-803d-34e4d96b4037",
+                  "node_id_ref": "2254af67-6e80-42ed-911a-b8f4c8e8af86",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 1,
+                    "max": 1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "33e99eb7-9655-4966-a2e7-8bd271578158",
+          "type": "execution_node",
+          "op": "endEvent",
+          "app_data": {
+            "react_nodes_data": {
+              "shape": "circle"
+            },
+            "ui_data": {
+              "label": "End event",
+              "image": "/images/custom-canvases/stages/decorations/dragStateStart.svg",
+              "x_pos": 660,
+              "y_pos": 440,
+              "description": "End event description"
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 1,
+                    "max": 1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "f51fe6f6-f348-4ccf-8d90-813b881d1ba1",
+                  "node_id_ref": "7d66c197-9cb8-4db8-9a2b-a608248c8a19",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": []
+        },
+        {
+          "id": "7d66c197-9cb8-4db8-9a2b-a608248c8a19",
+          "type": "execution_node",
+          "op": "userTask",
+          "app_data": {
+            "react_nodes_data": {
+              "shape": "card",
+              "color": "#EAC348"
+            },
+            "ui_data": {
+              "label": "Approval task",
+              "image": "images/custom-canvases/flows/palette/icons/userinput.svg",
+              "x_pos": 385,
+              "y_pos": 340,
+              "description": "User task",
+              "messages": [
+                {
+                  "id_ref": "workFlowConfigTitle",
+                  "validation_id": "workFlowConfigTitle",
+                  "type": "error",
+                  "text": "Workflow configuration title cannot be empty"
+                },
+                {
+                  "id_ref": "userTaskInboxTitle",
+                  "validation_id": "userTaskInboxTitle",
+                  "type": "error",
+                  "text": "User task inbox title cannot be empty"
+                }
+              ]
+            }
+          },
+          "inputs": [
+            {
+              "id": "inPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 1,
+                    "max": 1
+                  },
+                  "label": "Input Port"
+                }
+              },
+              "links": [
+                {
+                  "id": "61818fca-7236-4931-942f-b2ad332b9686",
+                  "node_id_ref": "6f8b9b23-c36a-453a-a6ed-bffa8501cf1b",
+                  "port_id_ref": "outPort"
+                }
+              ]
+            }
+          ],
+          "outputs": [
+            {
+              "id": "outPort",
+              "app_data": {
+                "ui_data": {
+                  "cardinality": {
+                    "min": 1,
+                    "max": 1
+                  },
+                  "label": "Output Port"
+                }
+              }
+            }
+          ],
+          "parameters": {
+            "workFlowConfigTitle": "",
+            "userTaskInboxTitle": "",
+            "workFlowConfigDescription": "",
+            "userTaskInboxDescription": ""
+          }
+        }
+      ],
+      "app_data": {
+        "ui_data": {
+          "comments": [
+            {
+              "id": "6bd17bb0-e68c-40c2-88fd-7dbdc19d15f5",
+              "x_pos": 330,
+              "y_pos": 20,
+              "width": 175,
+              "height": 61,
+              "content": "**_~~`Comments if needed. or delete this node.`~~_**",
+              "associated_id_refs": [
+                {
+                  "id": "3b6015ce-9b9a-484a-9c41-1f00eab765b9",
+                  "node_ref": "6f8b9b23-c36a-453a-a6ed-bffa8501cf1b"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "runtime_ref": ""
+    }
+  ],
+  "schemas": []
+}

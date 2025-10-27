@@ -96,6 +96,7 @@ export default class FlowsProperties extends React.Component {
 			disableSaveOnRequiredErrors: true,
 			trimSpaces: true,
 			heading: true,
+			showHeadingDesc: true,
 			showRequiredIndicator: true,
 			showAlertsTab: true,
 			returnValueFiltering: [],
@@ -168,23 +169,20 @@ export default class FlowsProperties extends React.Component {
 	}
 
 	applyPropertyChanges(form, appData, additionalInfo, undoInfo, uiProperties) {
-		if (appData && appData.nodeId) {
+		if (appData?.nodeId) {
+			const { nodeId, pipelineId } = appData;
 			const canvasController = this.props.canvasController;
 
 			// store parameters in case properties were opened from canvas
-			canvasController.setNodeParameters(appData.nodeId, form, appData.pipelineId);
-			canvasController.setNodeLabel(appData.nodeId, additionalInfo.title, appData.pipelineId);
-			canvasController.setNodeMessages(appData.nodeId, additionalInfo.messages, appData.pipelineId);
-			canvasController.setNodeUiParameters(appData.nodeId, uiProperties, appData.pipelineId);
+			canvasController.setNodeParameters(nodeId, form, pipelineId);
+			canvasController.setNodeLabel(nodeId, additionalInfo.title, pipelineId);
+			canvasController.setNodeMessages(nodeId, additionalInfo.messages, pipelineId);
+			canvasController.setNodeUiParameters(nodeId, uiProperties, pipelineId);
 		}
 	}
 
 	render() {
-		if (!this.state.showPropertiesDialog) {
-			return null;
-		}
-
-		return this.getCommonProperties();
+		return this.state.showPropertiesDialog ? this.getCommonProperties() : null;
 	}
 
 }

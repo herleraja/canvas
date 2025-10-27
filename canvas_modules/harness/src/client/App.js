@@ -61,6 +61,7 @@ import NetworkCanvas from "./components/custom-canvases/network/network-canvas";
 import WysiwygCommentsCanvas from "./components/custom-canvases/wysiwyg-comments/wysiwyg-comments-canvas";
 import ReactNodesDraggableCanvas from "./components/custom-canvases/react-nodes-draggable/react-nodes-draggable-canvas.jsx";
 import ReactNodesCarbonCanvas from "./components/custom-canvases/react-nodes-carbon/react-nodes-carbon-canvas";
+import ReactNodesCarbonCanvasWithBpm from "./components/custom-canvases/react-nodes-carbon/bpnm/react-nodes-carbon-canvas-with-bpmn";
 import ReactNodesMappingCanvas from "./components/custom-canvases/react-nodes-mapping/react-nodes-mapping-canvas";
 
 import Breadcrumbs from "./components/breadcrumbs.jsx";
@@ -128,6 +129,7 @@ import {
 	EXAMPLE_APP_WYSIWYG,
 	EXAMPLE_APP_REACT_NODES_DRAGGABLE,
 	EXAMPLE_APP_REACT_NODES_CARBON,
+	EXAMPLE_APP_REACT_NODES_CARBON_WITH_BPMN,
 	EXAMPLE_APP_REACT_NODES_MAPPING,
 	CUSTOM,
 	PROPERTIES_FLYOUT,
@@ -3021,6 +3023,13 @@ class App extends React.Component {
 		} else if (this.state.selectedExampleApp === EXAMPLE_APP_REACT_NODES_CARBON) {
 			firstCanvas = (
 				<ReactNodesCarbonCanvas
+					ref={this.canvasRef}
+					config={commonCanvasConfig}
+				/>
+			);
+		} else if (this.state.selectedExampleApp === EXAMPLE_APP_REACT_NODES_CARBON_WITH_BPMN) {
+			firstCanvas = (
+				<ReactNodesCarbonCanvasWithBpm
 					ref={this.canvasRef}
 					config={commonCanvasConfig}
 				/>
