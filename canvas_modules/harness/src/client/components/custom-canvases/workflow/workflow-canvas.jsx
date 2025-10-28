@@ -24,7 +24,7 @@ import UsertaskNodeWrapper from "./wrapper-usertask-node.jsx";
 
 // import ReactNodesFlow from "./workflow-flow.json";
 import ReactNodesPalette from "./workflow-palette.json";
-import FlowsProperties from "./flows-properties.jsx";
+import NodeProperties from "./node-properties.jsx";
 import LinksProperties from "./link-properties.jsx";
 
 const WorkflowCanvas = (props) => {
@@ -102,57 +102,16 @@ const WorkflowCanvas = (props) => {
 	};
 
 	const layoutHandler = (node) => {
-		console.log("🚀 ~ layoutHandler ~ node:", node)
-		if (node?.op && node.op.includes("shape-node")) {
+		if (node?.op && node.op.includes("usertask")) {
 			const config = {
-				// selectionPath: "M -4 -4 h 36 v 36 h -36 Z",
 				nodeExternalObject: UsertaskNodeWrapper,
-				// defaultNodeWidth: 28,
-				// defaultNodeHeight: 60,
-				// className: "shape-node",
-				// contextToolbarPosition: "topCenter",
-				// inputPortDisplay: false,
-				// inputPortLeftPosX: -12,
-				// inputPortLeftPosY: 15,
-				// outputPortRightPosX: 12,
-				// outputPortRightPosY: 15
 			};
 			return config;
 		}
 		return null;
 	};
 
-	const renderRightFlyoutContent = () => {
-		if (!selectedObject) {
-			return null;
-		}
-
-		console.log("🚀 ~ renderRightFlyoutContent ~ selectedObject:", selectedObject);
-		if (selectedObject.type === "node") {
-			return (
-				<FlowsProperties
-					canvasController={canvasController}
-					selectedNodeId={selectedObject.id}
-					pipelineId={selectedObject.pipelineId}
-				/>
-			);
-		}
-
-		if (selectedObject.type === "link") {
-			return (
-				<LinksProperties
-					canvasController={canvasController}
-					selectedLinkId={selectedObject.id}
-					pipelineId={selectedObject.pipelineId}
-				/>
-			);
-		}
-
-		return null;
-	};
-
 	const clickActionHandler = (source) => {
-		// Update the selected item
 		if (source.objectType === "node" && source.clickType === "DOUBLE_CLICK") {
 			setSelectedObject({
 				type: "node",
@@ -165,7 +124,27 @@ const WorkflowCanvas = (props) => {
 				id: source.id,
 				pipelineId: source.pipelineId,
 			});
+		} else {
+			setSelectedObject(null);
 		}
+	};
+
+	const rightFlyoutContent = () => {
+		if (selectedObject?.type === "node") {
+			return (<NodeProperties
+				canvasController={canvasController}
+				selectedNodeId={selectedObject.id}
+				pipelineId={selectedObject.pipelineId}
+			/>);
+		} else if (selectedObject?.type === "link") {
+			return (<LinksProperties
+				canvasController={canvasController}
+				selectedLinkId={selectedObject.id}
+				pipelineId={selectedObject.pipelineId}
+			/>);
+		}
+
+		return null;
 	};
 
 	return (
@@ -173,9 +152,9 @@ const WorkflowCanvas = (props) => {
 			canvasController={canvasController}
 			config={getConfig()}
 			layoutHandler={layoutHandler}
-			rightFlyoutContent={renderRightFlyoutContent()}
 			clickActionHandler={clickActionHandler}
-			showRightFlyout
+			rightFlyoutContent={rightFlyoutContent()}
+			showRightFlyout={Boolean(selectedObject)}
 		/>
 	);
 };

@@ -110,11 +110,11 @@ const LinkProperties = ({ canvasController, selectedLinkId, pipelineId }) => {
 				applyPropertyChanges: (form, appData, additionalInfo, undoInfo, uiProperties) => {
 					console.log("🚀 ~ LinkProperties ~ appData:", appData);
 					if (appData?.link?.id) {
-							console.log("🚀 ~ LinkProperties ~ appData: SAVED");
+						console.log("🚀 ~ LinkProperties ~ appData: SAVED");
 						// canvasController.setLinkProperties(appData.linkId, form, appData.pipelineId);
 						// canvasController.setLinkProperties(appData.link.id, { test: 123 }, appData.pipelineId);
 						canvasController.setLinkDecorations(appData.link.id,
-							[{ "id": "dec1", "position": "source", "class_name": "dec-class", "hotspot": true, label: "asdasdasdasdasd" }
+							[{ "id": "dec1", "position": "source", "class_name": "dec-class", "hotspot": true, label: "asdasdasd"}
 							], appData.pipelinId);
 
 
