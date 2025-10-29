@@ -14,66 +14,78 @@
  * limitations under the License.
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { FormattedMessage } from "react-intl";
 import { CommonProperties } from "common-canvas"; // eslint-disable-line import/no-unresolved
 import { isEmpty } from "lodash";
-import FormsService from "../../../services/FormsService";
+import FormsService from "../../../services/FormsService.js";
 import { PARAMETER_DEFS, CUSTOM } from "../../../constants/harness-constants.js";
-import CustomTableControl from "../../../components/custom-controls/CustomTableControl";
+import CustomTableControl from "../../custom-controls/CustomTableControl.js";
 
 const LinkProperties = ({ canvasController, selectedLinkId, pipelineId }) => {
-	console.log("🚀 ~ LinkProperties ~ pipelineId:", pipelineId)
-	console.log("🚀 ~ LinkProperties ~ selectedNodeId:", selectedLinkId)
 	const [propertiesInfo, setPropertiesInfo] = useState({});
 	const [availableParamDefs, setAvailableParamDefs] = useState([]);
 	const [showPropertiesDialog, setShowPropertiesDialog] = useState(false);
+	const commonPropsRef = useRef(null);
+
+	useEffect(() => {
+		if (commonPropsRef?.current) {
+			console.log("commonPropsRef methods:", Object.keys(commonPropsRef.current || {}));
+		}
+
+	}, [commonPropsRef, commonPropsRef.current]);
+
+	useEffect(() => {
+		if (selectedLinkId && availableParamDefs.length > 0) {
+			loadLinkProperties(selectedLinkId);
+		} else {
+			setShowPropertiesDialog(false);
+			setPropertiesInfo({});
+		}
+	}, [selectedLinkId, pipelineId, availableParamDefs]);
+
 
 	useEffect(() => {
 		// load parameter definitions once
 		FormsService.getFiles(PARAMETER_DEFS).then(setAvailableParamDefs);
 	}, []);
 
-	useEffect(() => {
-		if (selectedLinkId) {
-			loadNodeProperties(selectedLinkId);
-		} else {
-			setShowPropertiesDialog(false);
-			setPropertiesInfo({});
-		}
-	}, [selectedLinkId, pipelineId]);
+	const getPropertyDefName = (link, node) => {
+		if (node?.op) {
+			const foundName = availableParamDefs.find((name) => name.startsWith("link") && name.toLowerCase().includes(node.op.toLowerCase()));
 
-	const getPropertyDefName = (link) => {
-		console.log("🚀 ~ getPropertyDefName ~ link:", link)
-		
-		// if (node?.op) {
-		// 	const foundName = availableParamDefs.find((name) => name.startsWith(node.op));
-		// 	if (foundName) {
-		// 		return { fileName: foundName, type: PARAMETER_DEFS };
-		// 	}
-		// }
-		return { fileName: "default.json", type: PARAMETER_DEFS };
+			if (foundName) {
+				return { fileName: foundName, type: PARAMETER_DEFS };
+			}
+		}
+		return null;
 	};
 
-	const loadNodeProperties = (linkId) => {
+	const loadLinkProperties = (linkId) => {
 		const link = canvasController.getLink(linkId, pipelineId);
-		const propertyDef = getPropertyDefName(link);
-		FormsService.getFileContent(propertyDef.type, propertyDef.fileName).then((properties) => {
-			if (link) {
-				properties.current_parameters = link.parameters || {};
-				properties.current_ui_parameters = link.uiParameters || {};
-				properties.titleDefinition = { title: link.label };
-			}
-			setPropertiesInfo({
-				title: <FormattedMessage id="dialog.nodePropertiesTitle" />,
-				formData: properties.formData,
-				parameterDef: properties,
-				appData: { link, pipelineId, inExtraCanvas: false },
-				initialEditorSize: "small"
+		const sourceNode = canvasController.getNode(link.srcNodeId, pipelineId);
+		const propertyDef = getPropertyDefName(link, sourceNode);
+
+		// eslint-disable-next-line no-unused-vars
+		const { id, srcNodeId, srcNodePortId, trgNodeId, trgNodePortId, type, ...linkProperties } = link;
+
+		if (propertyDef) {
+			FormsService.getFileContent(propertyDef.type, propertyDef.fileName).then((properties) => {
+				if (link) {
+					properties.current_parameters = linkProperties || {};
+					properties.titleDefinition = { title: "Link with source: " + sourceNode.op };
+				}
+				setPropertiesInfo({
+					title: <FormattedMessage id="dialog.nodePropertiesTitle" />,
+					formData: properties.formData,
+					parameterDef: properties,
+					appData: { linkId, pipelineId, inExtraCanvas: false },
+					initialEditorSize: "small"
+				});
+				setShowPropertiesDialog(true);
 			});
-			setShowPropertiesDialog(true);
-		});
+		}
 	};
 
 	const getPropertiesConfig = () => ({
@@ -95,29 +107,30 @@ const LinkProperties = ({ canvasController, selectedLinkId, pipelineId }) => {
 		iconSwitch: false
 	});
 
-	console.log("🚀 ~ LinkProperties ~ propertiesInfo:", propertiesInfo)
-	console.log("🚀 ~ LinkProperties ~ showPropertiesDialog:", showPropertiesDialog)
 	if (!showPropertiesDialog || isEmpty(propertiesInfo)) {
 		return null;
 	}
 
 	return (
 		<CommonProperties
+			key={selectedLinkId}
+			light
+			ref={(instance) => {
+				if (instance) {
+					commonPropsRef.current = instance;
+					commonPropsRef.current?.PropertiesMain?.propertiesController.validatePropertiesValues();
+				}
+			}}
 			propertiesInfo={propertiesInfo}
 			propertiesConfig={getPropertiesConfig()}
 			customControls={[CustomTableControl]}
 			callbacks={{
 				applyPropertyChanges: (form, appData, additionalInfo, undoInfo, uiProperties) => {
-					console.log("🚀 ~ LinkProperties ~ appData:", appData);
-					if (appData?.link?.id) {
-						console.log("🚀 ~ LinkProperties ~ appData: SAVED");
-						// canvasController.setLinkProperties(appData.linkId, form, appData.pipelineId);
-						// canvasController.setLinkProperties(appData.link.id, { test: 123 }, appData.pipelineId);
-						canvasController.setLinkDecorations(appData.link.id,
-							[{ "id": "dec1", "position": "source", "class_name": "dec-class", "hotspot": true, label: "asdasdasd"}
-							], appData.pipelinId);
+					const decorations = [{ "position": "middle", "label": form.workflowState }];
 
-
+					if (appData?.linkId) {
+						canvasController.setLinkProperties(appData.linkId, form, appData.pipelineId);
+						canvasController.setLinkDecorations(appData.linkId, decorations, appData.pipelineId);
 					}
 				},
 				closePropertiesDialog: () => {
@@ -132,7 +145,7 @@ const LinkProperties = ({ canvasController, selectedLinkId, pipelineId }) => {
 LinkProperties.propTypes = {
 	canvasController: PropTypes.object.isRequired,
 	selectedLinkId: PropTypes.string,
-	pipelineId: PropTypes.string
+	pipelineId: PropTypes.string,
 };
 
 export default LinkProperties;

@@ -1,0 +1,109 @@
+{
+	"titleDefinition": {
+		"title": "Link Properties"
+	},
+	"current_parameters": {
+		"workflowState": "",
+		"actionLabel": ""
+	},
+	"parameters": [
+		{
+			"id": "workflowState",
+			"type": "string",
+			"default": "",
+			"required": false,
+			"enum": [
+				"Approval",
+				"Reject"
+			]
+		},
+		{
+			"id": "actionLabel",
+			"type": "string",
+			"default": "",
+			"required": false
+		}
+	],
+	"uihints": {
+		"id": "org.apache.spark.ml.ibm.transformers.Sample",
+		"icon": "images/transformationspark.svg",
+		"parameter_info": [
+			{
+				"parameter_ref": "actionLabel",
+				"label": {
+					"resource_key": "title"
+				},
+				"place_holder_text": {
+					"resource_key": "placeholder.actionLabel"
+				}
+			},
+			{
+				"parameter_ref": "workflowState",
+				"label": {
+					"resource_key": "description"
+				},
+				"control": "oneofselect",
+				"place_holder_text": {
+					"resource_key": "placeholder.workflowState"
+				}
+			}
+		],
+		"group_info": [
+			{
+				"id": "actionConfiguration",
+				"label": {
+					"default": "Workflow configuration"
+				},
+				"type": "panels",
+				"group_info": [
+					{
+						"id": "actionConfiguration-settings",
+						"type": "controls",
+						"parameter_refs": [
+							"actionLabel",
+							"workflowState"
+						]
+					}
+				]
+			}
+		],
+		"label": {
+			"default": "Link properties"
+		},
+		"description": {
+			"default": "User task description"
+		},
+		"help": {
+			"id": "link_for_description",
+			"data": {
+				"url": "randomUrl"
+			}
+		}
+	},
+	"conditions": [
+		{
+			"validation": {
+				"fail_message": {
+					"type": "error",
+					"focus_parameter_ref": "workflowState",
+					"message": {
+						"resource_key": "error.workflowStateRequired"
+					}
+				},
+				"evaluate": {
+					"condition": {
+						"parameter_ref": "workflowState",
+						"op": "isNotEmpty"
+					}
+				}
+			}
+		}	],
+	"resources": {
+		"title": "Title",
+		"description": "Description",
+		"placeholder.actionLabel": "Enter a title to display in task inbox page",
+		"placeholder.workflowState": "Enter a title to display in workflow configuration page",
+		"error.workflowStateRequired": "Workflow configuration title cannot be empty",
+		"error.actionLabelRequired": "User task inbox title cannot be empty"
+	}
+}
